@@ -132,7 +132,7 @@ public class SurfaceTextureRenderer extends EglRenderer {
 
   // Guards surface lifecycle transitions: creation/recreation happens on the
   // frame delivery thread while destruction arrives on the main thread via
-  // the producer's onSurfaceCleanup callback. Serializing the two prevents a
+  // the producer's onSurfaceDestroyed callback. Serializing the two prevents a
   // frame from re-creating the EGL surface against a Surface the producer is
   // concurrently invalidating. surfaceDestroyed() blocks on the EGL release
   // while holding this lock; the latch is signaled by the EglRenderer render
@@ -148,12 +148,12 @@ public class SurfaceTextureRenderer extends EglRenderer {
     this.producer.setCallback(
             new TextureRegistry.SurfaceProducer.Callback() {
               @Override
-              public void onSurfaceAvailable() {
+              public void onSurfaceCreated() {
                 // Do surface initialization here, and draw the current frame.
               }
 
               @Override
-              public void onSurfaceCleanup() {
+              public void onSurfaceDestroyed() {
                 surfaceDestroyed();
               }
             }
